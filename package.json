@@ -1,0 +1,26 @@
+{
+  "name"        : "deploybot-dashboard",
+  "description" : "Dashboard for deploybot.",
+  "keywords"    : ["deploy", "heroku", "git"],
+  "authors"     : [{
+    "name"        : "Abhishek Munie",
+    "email"       : "contact@abhishekmunie.com"
+  }],
+  "version"     : "0.1.0",
+  "engines"     : {
+    "node"        : ">=0.8.12",
+    "npm"         : ">=1.1.39"
+  },
+  "dependencies": {
+    "coffee-script": "1.2.x",
+    "express"      : "3.x",
+    "restler"      : "0.2.x"
+  },
+  "main"        : "server.js",
+  "homepage"    : "http://abhishekmunie.com/projects/deploybot-dashboard",
+  "bugs"        : "https://github.com/abhishekmunie/deploybot-dashboard/issues",
+  "repository"  : {
+    "type"        : "git",
+    "url"         : "git://github.com/abhishekmunie/deploybot-dashboard.git"
+  }
+}
