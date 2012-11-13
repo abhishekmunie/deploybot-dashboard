@@ -19,9 +19,6 @@ app.get '/', (req, res) ->
 
 app.get "/test/:app", (req, res) ->
   heroku_app = req.params.app
-  
-  res.setHeader 'Content-Type', 'text/plain'
-  res.setHeader 'Content-Length', body.length
 
   deploy_config = heroku.api(process.env.HEROKU_API_KEY, "application/json").request("GET", "/apps/" + heroku_app + "/config_vars")
 
@@ -35,6 +32,8 @@ app.get "/test/:app", (req, res) ->
 
     body = "#{heroku_app} will deploy deploy using #{config_vars["GIT_SOURCE_REPO"]} ##{config_vars["GIT_SOURCE_BRANCH"]||"master"}"
     res.status 200
+    res.setHeader 'Content-Length', body.length
+    res.setHeader 'Content-Type', 'text/plain'
     res.end body
     
 
