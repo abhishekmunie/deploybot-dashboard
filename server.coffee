@@ -4,9 +4,9 @@ express     = require 'express'
 
 error_msg =
   "200": "OK - Request succeeded, response contains requested data.",
-  "401": "Unauthorized - deploybot is not authorized to access this app.",
+  "401": "Unauthorized - deploybot is not authorized.",
   "402": "Payment Required - You must confirm your billing info to use this API.",
-  "403": "Forbidden - deploybot's access level don't permit it to assess the requires info.",
+  "403": "Forbidden - deploybot's access level don't permit it to assess the required info. Add bot@abhishekmunie.com as a collaborator.",
   "404": "Not Found - App was not found.",
   "412": "Precondition Failed - This API has been deprecated.",
   "422": "Unprocessable Entity - An error has occurred.",
@@ -35,7 +35,6 @@ app.get "/test/:app", (req, res) ->
     res.setHeader 'Content-Length', body.length
     res.setHeader 'Content-Type', 'text/plain'
     res.end body
-    
 
   deploy_config.on "error", (data, response) ->
     res.status response.statusCode
