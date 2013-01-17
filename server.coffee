@@ -1,4 +1,5 @@
 http        = require 'http'
+https       = require 'https'
 crypto      = require 'crypto'
 heroku      = require './lib/heroku'
 express     = require 'express'
@@ -50,11 +51,46 @@ app.configure () ->
   app.use express.session
     store: new PGStore(pgConnect),
     secret: process.env.SESSION_SECRET
+
 authUser = (req, res, next) ->
   if req.session.secure_state
       next()
   else
     res.send 401, { error: 'Unauthorized!' }
+
+options_AccessToken =
+  hostname: 'github.com',
+  port: 443,
+  path: '/login/oauth/access_token',
+  headers:
+    'Accept': 'application/json'
+  method: 'POST'
+
+app.get '/token/github?code=:code', authUser, (req, res) ->
+  req = https.request options, (res) ->
+    console.log "statusCode: ", res.statusCode
+    console.log "headers: ", res.headers
+
+    res.on 'data', (d) ->
+      req.session.access_token = JSON.parse(d)["access_token"]
+      https.get "https://api.github.com/user?access_token=#{req.session.access_token}", (res) ->
+        console.log("statusCode: ", res.statusCode);
+        console.log("headers: ", res.headers);
+
+        res.on 'data', (d) ->
+          res.status 200
+          res.type 'application/json'
+          res.end d
+
+      .on 'error', (e) ->
+        console.error e
+
+  req.end("client_id=#{process.env.GitHub_ID}&client_secret=#{process.env.GitHub_Secret}&code=#{req.params.code}&state=#{req.session.state}")
+
+  req.on 'error', (e) ->
+    console.error e
+    return e
+
 app.get '*', (req, res) ->
   unless req.session.secure_state
     req.session.secure_state = crypto.randomBytes(256)
