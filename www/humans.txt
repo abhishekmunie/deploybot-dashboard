@@ -1,0 +1,23 @@
+/* the humans responsible & colophon */
+/* humanstxt.org */
+
+/* TEAM */
+  Site Administrator: Abhishek Munie
+  Site: http://abhishekmunie.com
+  Contact: projects [at] abhishekmunie.com
+  Twitter: @abhishekmunie
+  Location: Earth
+
+/* THANKS */
+  Names (& URL):
+    Vjeux (http://blog.vjeux.com/2012/javascript/github-oauth-login-browser-side.html)
+    Alex Young (http://dailyjs.com/2010/12/06/node-tutorial-5/)
+
+/* SITE */
+  Last update:2012/01/18
+  Language:English
+  Doctype:HTML5
+  IDE: Sublime Text 2
+  Standards: HTML5, CSS3, ECMAScript5
+  Components: Modernizr, jQuery
+  Software: node.js, express.js, postgress
