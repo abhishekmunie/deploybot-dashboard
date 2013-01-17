@@ -127,9 +127,7 @@ app.get '*', (req, res) ->
     res.status 500
     res.end("Request: #{req.url}\nOops! node toppled while getting: #{uri}")
 
-app.post "/test/:app", (req, res) ->
-  heroku_app = req.params.app
-
+getSource = (heroku_app) ->
   deploy_config = heroku.api(process.env.HEROKU_API_KEY, "application/json").request("GET", "/apps/" + heroku_app + "/config_vars")
 
   deploy_config.on "success", (data, response) ->
@@ -140,15 +138,14 @@ app.post "/test/:app", (req, res) ->
       console.error "JSON prase error: " + err
       res.end "JSON prase error: " + err
 
-    body = "#{heroku_app} will deploy deploy using #{config_vars["SOURCE_REPO"]} ##{config_vars["SOURCE_BRANCH"]||"master"}"
-    res.status 200
-    res.setHeader 'Content-Length', body.length
-    res.setHeader 'Content-Type', 'text/plain'
-    res.end body
+    return {
+      repo: config_vars["SOURCE_REPO"],
+      branch: (config_vars["SOURCE_BRANCH"]||"master")
+    }
 
   deploy_config.on "error", (data, response) ->
-    res.status response.statusCode
-    res.end "ERROR: #{heroku_app} => #{error_msg[response.statusCode] || "Some error occured."}"
+    console.error "ERROR: #{heroku_app} => #{error_msg[response.statusCode] || "Some error occured."}"
+
 ###
 app.use (err, req, res, next) ->
   if req.xhr
