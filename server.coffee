@@ -1,4 +1,5 @@
 http        = require 'http'
+crypto      = require 'crypto'
 heroku      = require './lib/heroku'
 express     = require 'express'
 fs          = require 'fs'
@@ -6,6 +7,8 @@ url         = require 'url'
 path        = require 'path'
 zlib        = require 'zlib'
 StreamCache = require './lib/StreamCache'
+pg          = require 'pg'
+PGStore     = require 'connect-pg'
 
 error_msg =
   "200": "OK - Request succeeded, response contains requested data.",
@@ -38,26 +41,49 @@ for i in wwwFiles
 C404 = new StreamCache()
 fs.createReadStream(path.join(process.cwd(), url.parse("/www/404.html").pathname)).pipe(zlib.createGzip()).pipe(C404)
 
+pg.connect process.env.HEROKU_POSTGRESQL_OLIVE_URL, (err, client) ->
+  console.error JSON.stringify(err) if err
+
+app.configure () ->
+  app.use express.favicon()
+  app.use express.cookieDecoder()
+  app.use express.session
+    store: new PGStore(pgConnect),
+    secret: process.env.SESSION_SECRET
+authUser = (req, res, next) ->
+  if req.session.secure_state
+      next()
+  else
+    res.send 401, { error: 'Unauthorized!' }
 app.get '*', (req, res) ->
+  unless req.session.secure_state
+    req.session.secure_state = crypto.randomBytes(256)
+    res.cookie 'secure_state', req.session.secure_state,
+      domain: '.example.com'
+      path: '/admin'
+      #secure: true
   uri = req.url
-  console.log "got #{uri}"
 
   if cache = (wwwgz[uri] || wwwgz[uri+"index.html"] || wwwgz[uri+"index.htm"])
-    console.log 202
     res.status 200
     res.type path.extname(uri).split(".")[1] || "html"
-    res.set {
-      'content-encoding': 'gzip'
-    }
+    res.set
+      'content-encoding'            : 'gzip',
+      'Transfer-Encoding'           : 'chunked',
+      'Vary'                        : 'Accept-Encoding',
+      'X-UA-Compatible'             : 'IE=Edge,chrome=1',
+      'Connection'                  : 'Keep-Alive',
+      'Access-Control-Allow-Origin' : "#{req.protocol}://#{req.host}"
   else
-    console.log 404
     cache = C404;
     res.status 404
     res.type "text/plain"
-    res.set {
-      'content-encoding': 'gzip'
-    }
-  console.log "hi"
+    res.set
+      'content-encoding'            : 'gzip',
+      'Transfer-Encoding'           : 'chunked',
+      'Vary'                        : 'Accept-Encoding',
+      'X-UA-Compatible'             : 'IE=Edge,chrome=1',
+      'Access-Control-Allow-Origin' : "#{req.protocol}://#{req.host}"
 
   try
     cache.pipe(res);
