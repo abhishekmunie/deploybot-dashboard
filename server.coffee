@@ -1,6 +1,11 @@
 http        = require 'http'
-heroku      = require 'heroku'
+heroku      = require './lib/heroku'
 express     = require 'express'
+fs          = require 'fs'
+url         = require 'url'
+path        = require 'path'
+zlib        = require 'zlib'
+StreamCache = require './lib/StreamCache'
 
 error_msg =
   "200": "OK - Request succeeded, response contains requested data.",
@@ -14,10 +19,53 @@ error_msg =
 
 app = express()
 
-app.get '/', (req, res) ->
-  res.send 'Comming Soon...\nTo test a Heroku app send request at /test/:app'
+wwwFiles = [
+  '/index.html',
+  '/auth/github/index.html',
+  '/auth/heroku/index.html',
+  '/main.css',
+  '/humans.txt',
+  '/robots.txt'
+]
 
-app.get "/test/:app", (req, res) ->
+wwwgz = {}
+
+for i in wwwFiles
+  console.log i
+  wwwgz[i] = new StreamCache()
+  fs.createReadStream(path.join(process.cwd(), url.parse("/www#{i}").pathname)).pipe(zlib.createGzip()).pipe(wwwgz[i])
+
+C404 = new StreamCache()
+fs.createReadStream(path.join(process.cwd(), url.parse("/www/404.html").pathname)).pipe(zlib.createGzip()).pipe(C404)
+
+app.get '*', (req, res) ->
+  uri = req.url
+  console.log "got #{uri}"
+
+  if cache = (wwwgz[uri] || wwwgz[uri+"index.html"] || wwwgz[uri+"index.htm"])
+    console.log 202
+    res.status 200
+    res.type path.extname(uri).split(".")[1] || "html"
+    res.set {
+      'content-encoding': 'gzip'
+    }
+  else
+    console.log 404
+    cache = C404;
+    res.status 404
+    res.type "text/plain"
+    res.set {
+      'content-encoding': 'gzip'
+    }
+  console.log "hi"
+
+  try
+    cache.pipe(res);
+  catch e
+    res.status 500
+    res.end("Request: #{req.url}\nOops! node toppled while getting: #{uri}")
+
+app.post "/test/:app", (req, res) ->
   heroku_app = req.params.app
 
   deploy_config = heroku.api(process.env.HEROKU_API_KEY, "application/json").request("GET", "/apps/" + heroku_app + "/config_vars")
@@ -30,7 +78,7 @@ app.get "/test/:app", (req, res) ->
       console.error "JSON prase error: " + err
       res.end "JSON prase error: " + err
 
-    body = "#{heroku_app} will deploy deploy using #{config_vars["GIT_SOURCE_REPO"]} ##{config_vars["GIT_SOURCE_BRANCH"]||"master"}"
+    body = "#{heroku_app} will deploy deploy using #{config_vars["SOURCE_REPO"]} ##{config_vars["SOURCE_BRANCH"]||"master"}"
     res.status 200
     res.setHeader 'Content-Length', body.length
     res.setHeader 'Content-Type', 'text/plain'
@@ -39,5 +87,15 @@ app.get "/test/:app", (req, res) ->
   deploy_config.on "error", (data, response) ->
     res.status response.statusCode
     res.end "ERROR: #{heroku_app} => #{error_msg[response.statusCode] || "Some error occured."}"
+###
+app.use (err, req, res, next) ->
+  if req.xhr
+    res.send 500, { error: 'Something blew up!' }
+  else
+    next err
 
-.listen process.env.C9_PORT || process.env.PORT || process.env.VCAP_APP_PORT || process.env.VMC_APP_PORT || 1337 || 8001
+app.use (err, req, res, next) ->
+  res.status 500
+  res.render 'error', { error: err }###
+
+app.listen process.env.C9_PORT || process.env.PORT || process.env.VCAP_APP_PORT || process.env.VMC_APP_PORT || 1337 || 8001
