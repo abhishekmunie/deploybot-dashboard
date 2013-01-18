@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]>     <html lang="en" itemscope itemtype="http://schema.org/WebApplication" prefix="og: http://ogp.me/ns#" class="no-js loading ie6 lt-ie9 lt-ie8 lt-ie7 oldie"><![endif]-->
+<!--[if IE 7 ]>        <html lang="en" itemscope itemtype="http://schema.org/WebApplication" prefix="og: http://ogp.me/ns#" class="no-js loading ie7 lt-ie9 lt-ie8 oldie"><![endif]-->
+<!--[if IE 8 ]>        <html lang="en" itemscope itemtype="http://schema.org/WebApplication" prefix="og: http://ogp.me/ns#" class="no-js loading ie8 lt-ie9 oldie"><![endif]-->
+<!--[if IEMobile 7 ]>  <html lang="en" itemscope itemtype="http://schema.org/WebApplication" prefix="og: http://ogp.me/ns#" class="no-js loading iem7"> <![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile) ]><!--> <html lang="en" itemscope itemtype="http://schema.org/WebApplication" prefix="og: http://ogp.me/ns#" class="no-js loading animations-enable"><!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1"/>
+    <title>DelpoyBot Dashboard</title>
+    <link rel="Help" href="/Help/"/>
+    <meta name="author" content="Abhishek Munie"/>
+    <link type="text/plain" rel="author" href="/humans.txt"/>
+    <meta name="viewport" content="width=device-width"/>
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta http-equiv="cleartype" content="on">
+    <!--[if IE]><meta http-equiv="imagetoolbar" content="no"/><![endif]-->
+    <meta name="robots" content="all"/>
+    <meta name="synonyms" content="deploybot,deploy bot,deploybot-heroku,deploybot dashboard"/>
+    <meta name="keywords" content="deploybot,heroku,deploybot dashboard"/>
+    <meta name="description" content="Misson Control for deploying with DeployBot"/>
+    <link rel="home" href="https://deploybot-dashboard.herokuapp.com"/>
+    <link rel="index" href="sitemap.xml"/>
+    <link type="image/x-icon" href="favicon.ico" rel="shortcut icon"/>
+    <link type="image/png" href="favicon.png" rel="icon"/>
+    <link rel="alternate" type="application/rss+xml" title="Page RSS" href=" "/>
+    <link rel="publisher" href="https://plus.google.com/101030613278833301135"/>
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-title" content="">
+    <link rel="apple-touch-icon" href="apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-57x57-precomposed.png"/>
+
+    <meta property="og:title" content="DelpoyBot Dashboard"/>
+
+    <link rel="stylesheet" href="main.css" media=""/>
+
+    <script src="//js.mysite-cdn.tk/libs/modernizr.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+    <script>window.jQuery||document.write("\x3Cscript src='//js.mysite-cdn.tk/libs/jquery.min.js'\x3e\x3C/script\x3e")</script>
+    <script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function ($) {
+        $('#github-login>a').click(function () {
+          window.open('https://github.com' +
+            '/login/oauth/authorize' +
+            '?client_id=58a3dcf21a0bae21db44' +
+            '&scope=repo:status,notifications' +
+            '&state=' + (function (sKey) {
+              if (!sKey || !this.hasItem(sKey)) { return null; }
+              return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+            })('secure_state'));
+        });
+
+        $('#heroku-login>a').click(function () {
+          window.open('https://api.heroku.com' +
+            '/login?url=%2Foauth%2Fauthorize%3Fresponse_type%3Dcode' +
+            '%26client_id%3D43da29e8612754a04c6026e1' +
+            '%26redirect_uri%3Dhttps%3A%2F%2Fdeploybot-dashboard.herokuapp.com%2Fauth%2Fheroku');
+        });
+
+        window.addEventListener('message', function (event) {
+          var code = event.data;
+          $.getJSON('/token/github?code=' + code, function (user) {
+            console.log(user)
+          });
+        });
+      });
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-37749737-1']);
+      _gaq.push(['_trackPageview'], ['_trackPageLoadTime']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+    <body>
+      <!--[if lt IE 7]>
+      <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+      <![endif]--><div id="fb-root" style="display:block;"></div>
+      <header class="l-wrapper main-header" id="header">
+        <h1 class="dashboard-logo">
+          <a href="/" class="logo"><strong>DelpoyBot</strong> dashboard</a><a href="http://abhishekmunie.com" class="hiring" target="_blank">by Abhishek Munie</a>
+        </h1>
+        <nav class="main-navigation">
+          <ul>
+            <li class="nav-item"><a href="https://deploybot-dashboard.herokuapp.com" class="is-active">Home</a></li>
+            <li class="nav-item"><a href="https://github.com/abhishekmunie/deploybot-dashboard">Source on GitHub</a></li>
+            <li class="nav-item"><a href="https://github.com/abhishekmunie/deploybot-dashboard/wiki">Wiki</a></li>
+            <li class="nav-item"><a href="https://github.com/abhishekmunie/deploybot-dashboard/issues">Support</a></li>
+            <li class="drop-down nav-item">
+              <label for="accountToggler" id="account_toggle_button" class="topbar-inner searchTB "><img class="avatar" src="https://secure.gravatar.com/avatar/{{emailHash}}.png?d=https://api.heroku.com/images/v3/profile/ninja-avatar-48x48.png"></label>
+              <input type="checkbox" id="accountToggler" class="toggleCB" style="display:none;visibility:hidden;opacity:0;"/><ul>
+                <li id="github-login"><a class="btn-auth btn-github large" href="#button">Sign in with <b>GitHub</b></a></li>
+                <li id="heroku-login"><a class="btn-auth btn-heroku large" href="#button">Sign in with <b>Heroku</b></a></li>
+                <li><a href="/logout">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <section class="l-wrapper" id="content">
+
+        <header class="page-header">
+          <h1 class="location">Apps</h1>
+          <div class="actions search" data-original-title="e.g. name, owner, buildpack, or stack" data-placement="bottom">
+            <input autofocus="autofocus" data-user="abhishekmunie@gmail.com" placeholder="Find apps..." required="required" type="text">
+            <a href="#" class="clear" data-filter="">Clear search</a>
+          </div>
+        </header>
+
+        <ul class="app-list isotope" style="position: relative; overflow: hidden;">
+
+        </ul>
+
+        <div class="getting-started">
+          <dl class="documentation-list">
+            <dt>Getting to know DeployBot</dt>
+            <dd>
+              <to>learn more about Heroku, how to customize or deploy your own DeployBot, <a href="https://github.com/abhishekmunie/deploybot/wiki">visit the DeployBot Wiki</a>.</to>
+            </dd>
+          </dl>
+        </div>
+
+      </section>
+
+      <div id="preloads" class="hidden"></div>
+    </body>
+</html>
