@@ -48,7 +48,7 @@ pgConnect = (callback) ->
   pg.connect process.env.DATABASE_URL || process.env.HEROKU_POSTGRESQL_OLIVE_URL, (err, client) ->
     console.error JSON.stringify(err) if err
     console.log "Connected."
-    client.query 'CREATE SCHEMA  web' .on 'end', () ->
+    client.query('CREATE SCHEMA  web').on 'end', () ->
 
     callback(client) if client
 
