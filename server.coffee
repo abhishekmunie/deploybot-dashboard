@@ -44,8 +44,8 @@ C404 = new StreamCache()
 fs.createReadStream(path.join(process.cwd(), url.parse("/www/404.html").pathname)).pipe(zlib.createGzip()).pipe(C404)
 
 pgConnect = (callback) ->
-  console.log "Connecting to postgres... on #{process.env.DATABASE_URL} || #{process.env.HEROKU_POSTGRESQL_OLIVE_URL}"
-  pg.connect process.env.DATABASE_URL || process.env.HEROKU_POSTGRESQL_OLIVE_URL, (err, client) ->
+  console.log "Connecting to postgres..."
+  pg.connect process.env.HEROKU_POSTGRESQL_OLIVE_URL, (err, client) ->
     console.error JSON.stringify(err) if err
     console.log "Connected."
     client.query('CREATE SCHEMA  web').on 'end', () ->
@@ -57,7 +57,6 @@ app.configure () ->
   app.use express.favicon()
   app.use express.cookieParser()
   app.use express.session
-    store: new PGStore(pgConnect),
     secret: process.env.SESSION_SECRET
 
 authUser = (req, res, next) ->
