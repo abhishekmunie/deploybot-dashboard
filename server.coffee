@@ -11,6 +11,8 @@ StreamCache = require 'StreamCache'
 pg          = require 'pg'
 PGStore     = require 'connect-pg'
 
+console.log "Dependencies loaded."
+
 error_msg =
   "200": "OK - Request succeeded, response contains requested data.",
   "401": "Unauthorized - deploybot is not authorized.",
@@ -45,11 +47,14 @@ fs.createReadStream(path.join(process.cwd(), url.parse("/www/404.html").pathname
 pgConnect = (callback) ->
   pg.connect process.env.HEROKU_POSTGRESQL_OLIVE_URL, (err, client) ->
     console.error JSON.stringify(err) if err
+    console.log "Connected."
     callback(client) if client
 
 app.configure () ->
+  console.log "Configuring App..."
   app.use express.favicon()
   app.use express.cookieDecoder()
+  console.log "Connecting to postgres..."
   app.use express.session
     store: new PGStore(pgConnect),
     secret: process.env.SESSION_SECRET
@@ -160,3 +165,4 @@ app.use (err, req, res, next) ->
   res.render 'error', { error: err }###
 
 app.listen process.env.C9_PORT || process.env.PORT || process.env.VCAP_APP_PORT || process.env.VMC_APP_PORT || 1337 || 8001
+console.log "Listening on port: #{process.env.C9_PORT || process.env.PORT || process.env.VCAP_APP_PORT || process.env.VMC_APP_PORT || 1337 || 8001}"

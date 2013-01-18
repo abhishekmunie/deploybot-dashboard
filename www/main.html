@@ -1,0 +1,119 @@
+<a href="https://github.com/vjeux/GithubLogin/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/e6bef7a091f5f3138b8cd40bc3e114258dd68ddf/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub"></a>
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+<style>
+label, textarea, a { display: block; }
+hr { margin: 20px 0; }
+input { width: 300px; }
+</style>
+
+<h2>Login</h2>
+<button id="login">Login</button>
+<label>code <input type="text" id="code"></input></label>
+<label>access_token <input type="text" id="access_token"></input></label>
+<label>username <input type="text" id="username"></input></label>
+
+<script>
+// Step 2
+$('#login').click(function () {
+	window.open('https://github.com' +
+		'/login/oauth/authorize' +
+		'?client_id=58a3dcf21a0bae21db44' +
+		'&scope=gist');
+});
+
+// Step 4
+window.addEventListener('message', function (event) {
+	var code = event.data;
+	$('#code').val(code);
+
+	// Step 5
+	$.get('token.php?code=' + code, function (access_token) {
+		// Step 7
+		$('#access_token').val(access_token);
+
+		$.getJSON('https://api.github.com/user?access_token=' + access_token, function (user) {
+			$('#username').val(user.login);
+		});
+	});
+});
+</script>
+
+<hr />
+
+<h2>Interact</h2>
+<textarea id="gist_content">Let's make a gist!</textarea>
+<button id="gist_new">New private gist</button>
+<label>link <input type="text" id="gist_link"></input></label>
+
+<script>
+$('#gist_new').click(function () {
+	var url = 'https://api.github.com/gists' +
+		'?access_token=' + $('#access_token').val();
+
+	var data = JSON.stringify({
+		"public": false,
+		"files": {
+			"sample.txt": {
+				"content": $('#gist_content').val()
+			}
+		}
+	});
+
+	$.post(url, data, function (gist) {
+		$('#gist_link').val(gist.html_url);
+	});
+});
+</script>
+{{#tweets}}
+            {{> tweet}}
+          {{/tweets}}
+          <li id="app-2991260" class="item is-favorite development isotope-item filtered" data-index="abhishekmunie cedar nginx abhishekmunie@gmail.com stage:development" data-id="2991260" data-micro-dashboard-url="/apps/abhishekmunie/micro_dashboard">
+            <div class="container">
+              <div class="main-info">
+                <hgroup>
+                  <h2 class="item-title">
+                      <a href="/apps/abhishekmunie" class="primary-action">abhishekmunie</a>
+                  </h2>
+                </hgroup>
+                <ul class="app-shortcuts ">
+                  <li class="resources"><a href="/apps/abhishekmunie/resources" data-original-title="Resources">Resources</a></li>
+                  <li class="activity"><a href="/apps/abhishekmunie/activity" data-original-title="Activity">Activity</a></li>
+                  <li class="collaborators"><a href="/apps/abhishekmunie/collaborators" data-original-title="Collaborators">Collaborators</a></li>
+                  <li class="settings"><a href="/apps/abhishekmunie/settings" data-original-title="Settings">Settings</a></li>
+                  <li class="favorite">
+                    <form accept-charset="UTF-8" action="/user_info/favorite" class="new_favorite" data-remote="true" id="new_favorite" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓" data-original-title=""><input name="authenticity_token" type="hidden" value="LsM9o80RWcVAnq9MlfIp4OzWB033EfDBj/I80xzZi2o=" data-original-title=""></div>
+                      <input id="favorite_app_info_id" name="favorite[app_info_id]" type="hidden" value="28720" data-original-title="">
+                      <input id="favorite_user_info_id" name="favorite[user_info_id]" type="hidden" value="4922" data-original-title="">
+                      <input name="commit" type="submit" value="Favorite" data-original-title="Favorite">
+                    </form>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+          <li id="app-7415515" class="item  production isotope-item filtered" data-index="a18 cedar abhishekmunie@gmail.com stage:production" data-id="7415515" data-micro-dashboard-url="/apps/a18/micro_dashboard">
+            <div class="container">
+              <div class="main-info">
+                <hgroup>
+                  <h2 class="item-title">
+                      <a href="/apps/a18" class="primary-action">a18</a>
+                  </h2>
+                </hgroup>
+                <ul class="app-shortcuts ">
+                  <li class="resources"><a href="/apps/a18/resources" data-original-title="Resources">Resources</a></li>
+                  <li class="activity"><a href="/apps/a18/activity" data-original-title="Activity">Activity</a></li>
+                  <li class="collaborators"><a href="/apps/a18/collaborators" data-original-title="Collaborators">Collaborators</a></li>
+                  <li class="settings"><a href="/apps/a18/settings" data-original-title="Settings">Settings</a></li>
+
+                  <li class="favorite">
+                    <form accept-charset="UTF-8" action="/user_info/favorite" class="new_favorite" data-remote="true" id="new_favorite" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓" data-original-title=""><input name="authenticity_token" type="hidden" value="LsM9o80RWcVAnq9MlfIp4OzWB033EfDBj/I80xzZi2o=" data-original-title=""></div>
+                      <input id="favorite_app_info_id" name="favorite[app_info_id]" type="hidden" value="48222" data-original-title="">
+                      <input id="favorite_user_info_id" name="favorite[user_info_id]" type="hidden" value="4922" data-original-title="">
+                      <input name="commit" type="submit" value="Favorite" data-original-title="Favorite">
+                    </form>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
