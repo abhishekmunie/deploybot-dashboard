@@ -44,8 +44,7 @@ C404 = new StreamCache()
 fs.createReadStream(path.join(process.cwd(), url.parse("/www/404.html").pathname)).pipe(zlib.createGzip()).pipe(C404)
 
 pgConnect = (callback) ->
-  console.log "Connecting to postgres..."
-  pg.connect process.env.DATABASE_URL, (err, client) ->
+  pg.connect process.env.HEROKU_POSTGRESQL_OLIVE_URL, (err, client) ->
     console.error JSON.stringify(err) if err
     console.log "Connected."
     callback(client) if client
