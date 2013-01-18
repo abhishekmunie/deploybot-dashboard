@@ -37,7 +37,6 @@ wwwFiles = [
 wwwgz = {}
 
 for i in wwwFiles
-  console.log i
   wwwgz[i] = new StreamCache()
   fs.createReadStream(path.join(process.cwd(), url.parse("/www#{i}").pathname)).pipe(zlib.createGzip()).pipe(wwwgz[i])
 
@@ -53,7 +52,6 @@ pgConnect = (callback) ->
 app.configure () ->
   console.log "Configuring App..."
   app.use express.favicon()
-  app.use express.cookieDecoder()
   console.log "Connecting to postgres..."
   app.use express.session
     store: new PGStore(pgConnect),
