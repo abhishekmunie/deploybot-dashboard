@@ -44,10 +44,12 @@ C404 = new StreamCache()
 fs.createReadStream(path.join(process.cwd(), url.parse("/www/404.html").pathname)).pipe(zlib.createGzip()).pipe(C404)
 
 pgConnect = (callback) ->
-  console.log "Connecting to postgres..."
-  pg.connect process.env.HEROKU_POSTGRESQL_OLIVE_URL, (err, client) ->
+  console.log "Connecting to postgres... on #{process.env.DATABASE_URL} || #{process.env.HEROKU_POSTGRESQL_OLIVE_URL}"
+  pg.connect process.env.DATABASE_URL || process.env.HEROKU_POSTGRESQL_OLIVE_URL, (err, client) ->
     console.error JSON.stringify(err) if err
     console.log "Connected."
+    client.query 'CREATE SCHEMA  web' .on 'end', () ->
+
     callback(client) if client
 
 app.configure () ->
@@ -153,7 +155,6 @@ getSource = (heroku_app, callback) ->
     callback
       error_res: response
       error_data: data
-
 
 ###
 app.use (err, req, res, next) ->
