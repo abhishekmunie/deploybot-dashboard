@@ -42,8 +42,10 @@ for i in wwwFiles
 C404 = new StreamCache()
 fs.createReadStream(path.join(process.cwd(), url.parse("/www/404.html").pathname)).pipe(zlib.createGzip()).pipe(C404)
 
-pg.connect process.env.HEROKU_POSTGRESQL_OLIVE_URL, (err, client) ->
-  console.error JSON.stringify(err) if err
+pgConnect = (callback) ->
+  pg.connect process.env.HEROKU_POSTGRESQL_OLIVE_URL, (err, client) ->
+    console.error JSON.stringify(err) if err
+    callback(client) if client
 
 app.configure () ->
   app.use express.favicon()
