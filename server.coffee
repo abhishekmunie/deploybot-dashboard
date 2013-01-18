@@ -133,10 +133,10 @@ app.get '*', (req, res) ->
     res.status 500
     res.end("Request: #{req.url}\nOops! node toppled while getting: #{uri}")
 
-getSource = (heroku_app) ->
-  deploy_config = heroku.api(process.env.HEROKU_API_KEY, "application/json").request("GET", "/apps/" + heroku_app + "/config_vars")
+getSource = (heroku_app, callback) ->
+  getConfig = heroku.api(process.env.HEROKU_API_KEY, "application/json").request("GET", "/apps/" + heroku_app + "/config_vars")
 
-  deploy_config.on "success", (data, response) ->
+  getConfig.on "success", (data, response) ->
     config_vars = data
     try
       config_vars = JSON.parse config_vars
@@ -144,13 +144,16 @@ getSource = (heroku_app) ->
       console.error "JSON prase error: " + err
       res.end "JSON prase error: " + err
 
-    return {
+    callback
       repo: config_vars["SOURCE_REPO"],
       branch: (config_vars["SOURCE_BRANCH"]||"master")
-    }
 
-  deploy_config.on "error", (data, response) ->
+  getConfig.on "error", (data, response) ->
     console.error "ERROR: #{heroku_app} => #{error_msg[response.statusCode] || "Some error occured."}"
+    callback
+      error_res: response
+      error_data: data
+
 
 ###
 app.use (err, req, res, next) ->
@@ -164,4 +167,4 @@ app.use (err, req, res, next) ->
   res.render 'error', { error: err }###
 
 app.listen process.env.C9_PORT || process.env.PORT || process.env.VCAP_APP_PORT || process.env.VMC_APP_PORT || 1337 || 8001
-console.log "Listening on port: #{process.env.C9_PORT || process.env.PORT || process.env.VCAP_APP_PORT || process.env.VMC_APP_PORT || 1337 || 8001}"
+console.log "Listening..."
